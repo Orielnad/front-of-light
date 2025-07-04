@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <title>מוצרי החנות – FRONT OF LIGHT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      direction: rtl;
+      font-family: Arial, sans-serif;
+      background-color: #fdfdfd;
+      color: #7b241c;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #f6ddcc;
+      color: white;
+      text-align: center;
+      padding: 1.5em 0;
+    }
+    nav {
+      text-align: center;
+      margin-top: 1em;
+    }
+    nav a {
+      margin: 0 10px;
+      color: #7b241c;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .products {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 2em;
+    }
+    .product {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1em;
+      margin: 1em;
+      width: 250px;
+      text-align: center;
+      background-color: #fff;
+    }
+    .product img {
+      max-width: 100%;
+      border-radius: 4px;
+    }
+    .product h3 {
+      margin: 0.5em 0;
+    }
+    .product p {
+      font-size: 0.95em;
+      color: #7b241c;
+    }
+    footer {
+      background-color: #f6ddcc;
+      color: white;
+      text-align: center;
+      padding: 1em 0;
+      margin-top: 3em;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>מוצרי החנות</h1>
+</header>
+
+<nav>
+  <a href="index.html">דף הבית</a>
+  <a href="products.html">מוצרים</a>
+  <a href="#">אודות</a>
+  <a href="#">צור קשר</a>
+</nav>
+
+<section class="products">
+  <div class="product">
+    <img src="rebbe0.png" alt="ליטופן של הרבי">
+    <h3>ליטופן שולחני</h3>
+    <p>מונרת לילה בגודל סטנדרטי 10X7 ס"מ עם בסיס תאורה איכותי. מיוצר באיכות גבוהה ומוכן להצבה.</p>
+    <p><strong>₪230</strong></p>
+    <a href="https://buy.stripe.com/test_00g5nT5fY0qDaSc6oo">לרכישה</a>
+  </div>
+</section>
+
+<footer>
+  &copy; 2025 FRONT OF LIGHT | כל הזכויות שמורות
+</footer>
+
+</body>
+</html>
