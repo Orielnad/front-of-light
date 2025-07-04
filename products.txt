@@ -79,7 +79,7 @@
 
 <section class="products">
   <div class="product">
-    <img src="rebbe0.png" alt="ליטופן של הרבי">
+    <img src="rebbe0.jpg" alt="ליטופן של הרבי">
     <h3>ליטופן שולחני</h3>
     <p>מונרת לילה בגודל סטנדרטי 10X7 ס"מ עם בסיס תאורה איכותי. מיוצר באיכות גבוהה ומוכן להצבה.</p>
     <p><strong>₪230</strong></p>
