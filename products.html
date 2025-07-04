@@ -43,7 +43,6 @@
       width: 250px;
       text-align: center;
       background-color: #fff;
-      position: relative;
     }
     .product img {
       max-width: 100%;
@@ -55,33 +54,6 @@
     .product p {
       font-size: 0.95em;
       color: #7b241c;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      right: 0;
-      top: 0;
-      width: 300px;
-      height: 100%;
-      background-color: #f6ddcc;
-      box-shadow: -2px 0 10px rgba(0,0,0,0.2);
-      padding: 20px;
-    }
-    .modal-content {
-      text-align: center;
-    }
-    .modal .close {
-      float: left;
-      font-size: 28px;
-      cursor: pointer;
-    }
-    .color-options img {
-      width: 50px;
-      margin: 5px;
-      border: 2px solid #ccc;
-      cursor: pointer;
-      border-radius: 5px;
     }
     footer {
       background-color: #f6ddcc;
@@ -107,44 +79,27 @@
 
 <section class="products">
   <div class="product">
-    <img id="product-img1" src="default.jpg" alt="מוצר בצבע ברירת מחדל">
-    <h3>מנורת לילה בהתאמה אישית</h3>
-    <p>בחר את הצבע שמתאים לך והזמן מנורת לילה בעיצוב ייחודי.</p>
-    <p><strong>₪250</strong></p>
-    <button onclick="openModal('modal1')">בחר צבע</button>
+    <img src="rebbe0.jpg" alt="ליטופן של הרבי">
+    <h3>מנורת לילה</h3>
+    <p>מנורת לילה בגודל סטנדרטי 10X7 ס"מ עם בסיס תאורה איכותי. מיוצר באיכות גבוהה ומוכן להצבה.</p>
+    <p><strong>₪230</strong></p>
+    <a href="https://buy.stripe.com/test_00g5nT5fY0qDaSc6oo">לרכישה</a>
   </div>
-</section>
 
-<!-- Modal -->
-<div id="modal1" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('modal1')">&times;</span>
-    <h3>בחר צבע</h3>
-    <div class="color-options">
-      <img src="color-red.jpg" onclick="changeImage('product-img1', 'color-red.jpg')">
-      <img src="color-blue.jpg" onclick="changeImage('product-img1', 'color-blue.jpg')">
-      <img src="color-white.jpg" onclick="changeImage('product-img1', 'color-white.jpg')">
-      <img src="color-wood.jpg" onclick="changeImage('product-img1', 'color-wood.jpg')">
-    </div>
+  <div class="product">
+    <img src="rebbe2.jpg" alt="ליטופן הרבי צד שני">
+    <h3>מנורה צבעונית</h3>
+    <p>  מנורת לילה בגובה 10 ס"מ על בסיס מעוצב בצבעים שונים לבחירה. מוארת בתאורה חמימה. מגיעה עם כבל באורך מטר.</p>
+    <p><strong>₪260</strong></p>
+    <a href="https://buy.stripe.com/test_cN21gR9gk5aZ6JqaEG">לרכישה</a>
   </div>
-</div>
+
+  <!-- הוסף כאן מוצרים נוספים באותו מבנה -->
+</section>
 
 <footer>
   &copy; 2025 FRONT OF LIGHT | כל הזכויות שמורות
 </footer>
-
-<script>
-function openModal(id) {
-  document.getElementById(id).style.display = "block";
-}
-function closeModal(id) {
-  document.getElementById(id).style.display = "none";
-}
-function changeImage(imageId, newSrc) {
-  document.getElementById(imageId).src = newSrc;
-  closeModal('modal1');
-}
-</script>
 
 </body>
 </html>
