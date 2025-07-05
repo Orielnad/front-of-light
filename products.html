@@ -17,6 +17,18 @@
       background-color: #f6ddcc;
       text-align: center;
       padding: 1.5em 0;
+      position: relative;
+    }
+    .cart-button {
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      background-color: #7b241c;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 6px;
     }
     nav {
       text-align: center;
@@ -42,19 +54,11 @@
       width: 250px;
       text-align: center;
       background-color: #fff;
-      position: relative;
     }
     .product img {
       max-width: 100%;
       border-radius: 4px;
     }
-    .product h3 {
-      margin: 0.5em 0;
-    }
-    .product p {
-      font-size: 0.95em;
-    }
-
     button {
       margin-top: 10px;
       padding: 10px;
@@ -64,8 +68,6 @@
       border-radius: 5px;
       cursor: pointer;
     }
-
-    /* מודל (חלון קופץ) */
     .modal {
       display: none;
       position: fixed;
@@ -105,6 +107,31 @@
       border-radius: 8px;
       text-align: center;
     }
+
+    .cart {
+      position: fixed;
+      left: -300px;
+      top: 0;
+      width: 300px;
+      height: 100%;
+      background-color: #f6ddcc;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+      padding: 20px;
+      z-index: 1100;
+      transition: left 0.3s ease-in-out;
+    }
+    .cart.open {
+      left: 0;
+    }
+    .cart h3 {
+      text-align: center;
+    }
+    .cart-item {
+      margin-bottom: 15px;
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 6px;
+    }
     footer {
       background-color: #f6ddcc;
       color: white;
@@ -118,6 +145,7 @@
 
 <header>
   <h1>מוצרי החנות</h1>
+  <button class="cart-button" onclick="toggleCart()">🛒 סל קניות</button>
 </header>
 
 <nav>
@@ -129,8 +157,8 @@
 
 <section class="products">
 
-  <!-- מוצר ראשון -->
-  <div class="product" data-product-id="1">
+  <!-- מוצר -->
+  <div class="product" data-id="1">
     <img src="rebbe0.jpg" alt="מנורת לילה">
     <h3>מנורת לילה</h3>
     <p>מנורת לילה בגודל 10x7 ס”מ עם בסיס תאורה איכותי.</p>
@@ -138,19 +166,30 @@
     <button onclick="openModal(1)">בחר צבע</button>
   </div>
 
-  <!-- מוצר שני -->
-  <div class="product" data-product-id="2">
+  <!-- מוצר נוסף -->
+  <div class="product" data-id="2">
     <img src="rebbe2.jpg" alt="מנורה צבעונית">
     <h3>מנורה צבעונית</h3>
-    <p>מנורה על בסיס צבעוני עם תאורה חמימה. מגיעה עם כבל.</p>
+    <p>מנורה על בסיס צבעוני עם תאורה חמימה.</p>
     <p><strong>₪260</strong></p>
     <button onclick="openModal(2)">בחר צבע</button>
   </div>
 
 </section>
 
-<!-- מודלים (ייווצרו דינמית ב-JS) -->
-<div id="modals-container"></div>
+<div class="modal" id="modal">
+  <span class="close" onclick="closeModal()">&times;</span>
+  <h3 id="modal-title">בחר צבע</h3>
+  <div class="color-options" id="color-options"></div>
+  <div class="selection-summary" id="selection-summary" style="display:none;"></div>
+</div>
+
+<div class="cart" id="cart">
+  <h3>הסל שלך</h3>
+  <div id="cart-items"></div>
+  <p><strong>סה"כ: ₪<span id="total">0</span></strong></p>
+  <a href="https://buy.stripe.com/test_00g5nT5fY0qDaSc6oo"><button>לתשלום</button></a>
+</div>
 
 <footer>
   &copy; 2025 FRONT OF LIGHT | כל הזכויות שמורות
@@ -167,61 +206,78 @@
   ];
 
   const products = {
-    1: { name: 'מנורת לילה', price: '₪230', image: 'rebbe0.jpg', link: 'https://buy.stripe.com/test_00g5nT5fY0qDaSc6oo' },
-    2: { name: 'מנורה צבעונית', price: '₪260', image: 'rebbe2.jpg', link: 'https://buy.stripe.com/test_cN21gR9gk5aZ6JqaEG' }
+    1: { name: 'מנורת לילה', price: 230, image: 'rebbe0.jpg' },
+    2: { name: 'מנורה צבעונית', price: 260, image: 'rebbe2.jpg' }
   };
 
+  let selectedProductId = null;
+  let selectedColor = null;
+  const cart = [];
+
   function openModal(productId) {
-    let modal = document.getElementById("modal-" + productId);
-    if (!modal) {
-      createModal(productId);
-      modal = document.getElementById("modal-" + productId);
-    }
-    modal.style.display = "block";
+    selectedProductId = productId;
+    selectedColor = null;
+    document.getElementById("modal-title").innerText = "בחר צבע למוצר: " + products[productId].name;
+    const options = document.getElementById("color-options");
+    options.innerHTML = "";
+    colors.forEach(color => {
+      const div = document.createElement("div");
+      div.className = "color-circle";
+      div.style.backgroundColor = color.hex;
+      div.title = color.name;
+      div.onclick = () => selectColor(productId, color.name);
+      options.appendChild(div);
+    });
+    document.getElementById("selection-summary").style.display = "none";
+    document.getElementById("modal").style.display = "block";
   }
 
-  function closeModal(productId) {
-    const modal = document.getElementById("modal-" + productId);
-    if (modal) modal.style.display = "none";
-  }
-
-  function createModal(productId) {
-    const container = document.getElementById("modals-container");
-    const product = products[productId];
-
-    const modal = document.createElement("div");
-    modal.className = "modal";
-    modal.id = "modal-" + productId;
-
-    modal.innerHTML = `
-      <span class="close" onclick="closeModal(${productId})">&times;</span>
-      <h3>בחר צבע למוצר: ${product.name}</h3>
-      <div class="color-options">
-        ${colors.map(color => `
-          <div class="color-circle" title="${color.name}" 
-               style="background-color: ${color.hex}" 
-               onclick="selectColor(${productId}, '${color.name}')"></div>
-        `).join("")}
-      </div>
-      <div class="selection-summary" id="summary-${productId}" style="display: none;"></div>
-    `;
-
-    container.appendChild(modal);
+  function closeModal() {
+    document.getElementById("modal").style.display = "none";
   }
 
   function selectColor(productId, colorName) {
+    selectedColor = colorName;
     const product = products[productId];
-    const summary = document.getElementById("summary-" + productId);
+    const summary = document.getElementById("selection-summary");
     summary.innerHTML = `
       <img src="${product.image}" alt="${product.name}" style="max-width:100px;"><br>
       <p><strong>${product.name}</strong></p>
-      <p>${product.price}</p>
-      <p>צבע שנבחר: <strong>${colorName}</strong></p>
-      <a href="${product.link}" target="_blank">
-        <button>לתשלום</button>
-      </a>
+      <p>צבע: ${colorName}</p>
+      <p>מחיר: ₪${product.price}</p>
+      <button onclick="addToCart(${productId}, '${colorName}')">הוסף לסל</button>
     `;
     summary.style.display = "block";
+  }
+
+  function addToCart(productId, color) {
+    const product = products[productId];
+    cart.push({ ...product, color });
+    updateCart();
+    closeModal();
+  }
+
+  function toggleCart() {
+    const cartEl = document.getElementById("cart");
+    cartEl.classList.toggle("open");
+  }
+
+  function updateCart() {
+    const container = document.getElementById("cart-items");
+    container.innerHTML = "";
+    let total = 0;
+    cart.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "cart-item";
+      div.innerHTML = `
+        <p><strong>${item.name}</strong></p>
+        <p>צבע: ${item.color}</p>
+        <p>₪${item.price}</p>
+      `;
+      container.appendChild(div);
+      total += item.price;
+    });
+    document.getElementById("total").innerText = total;
   }
 </script>
 
