@@ -15,7 +15,6 @@
     }
     header {
       background-color: #f6ddcc;
-      color: #7b241c;
       text-align: center;
       padding: 1.5em 0;
     }
@@ -43,6 +42,7 @@
       width: 250px;
       text-align: center;
       background-color: #fff;
+      position: relative;
     }
     .product img {
       max-width: 100%;
@@ -53,7 +53,57 @@
     }
     .product p {
       font-size: 0.95em;
-      color: #7b241c;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #7b241c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    /* מודל (חלון קופץ) */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 100%;
+      background-color: #f6ddcc;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .modal .close {
+      font-size: 26px;
+      float: left;
+      cursor: pointer;
+    }
+    .color-options {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    .color-circle {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid #999;
+    }
+    .selection-summary {
+      margin-top: 20px;
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
     }
     footer {
       background-color: #f6ddcc;
@@ -78,28 +128,102 @@
 </nav>
 
 <section class="products">
-  <div class="product">
-    <img src="rebbe0.jpg" alt="ליטופן של הרבי">
+
+  <!-- מוצר ראשון -->
+  <div class="product" data-product-id="1">
+    <img src="rebbe0.jpg" alt="מנורת לילה">
     <h3>מנורת לילה</h3>
-    <p>מנורת לילה בגודל סטנדרטי 10X7 ס"מ עם בסיס תאורה איכותי. מיוצר באיכות גבוהה ומוכן להצבה.</p>
+    <p>מנורת לילה בגודל 10x7 ס”מ עם בסיס תאורה איכותי.</p>
     <p><strong>₪230</strong></p>
-    <a href="https://buy.stripe.com/test_00g5nT5fY0qDaSc6oo">לרכישה</a>
+    <button onclick="openModal(1)">בחר צבע</button>
   </div>
 
-  <div class="product">
-    <img src="rebbe2.jpg" alt="ליטופן הרבי צד שני">
+  <!-- מוצר שני -->
+  <div class="product" data-product-id="2">
+    <img src="rebbe2.jpg" alt="מנורה צבעונית">
     <h3>מנורה צבעונית</h3>
-    <p>  מנורת לילה בגובה 10 ס"מ על בסיס מעוצב בצבעים שונים לבחירה. מוארת בתאורה חמימה. מגיעה עם כבל באורך מטר.</p>
+    <p>מנורה על בסיס צבעוני עם תאורה חמימה. מגיעה עם כבל.</p>
     <p><strong>₪260</strong></p>
-    <a href="https://buy.stripe.com/test_cN21gR9gk5aZ6JqaEG">לרכישה</a>
+    <button onclick="openModal(2)">בחר צבע</button>
   </div>
 
-  <!-- הוסף כאן מוצרים נוספים באותו מבנה -->
 </section>
+
+<!-- מודלים (ייווצרו דינמית ב-JS) -->
+<div id="modals-container"></div>
 
 <footer>
   &copy; 2025 FRONT OF LIGHT | כל הזכויות שמורות
 </footer>
+
+<script>
+  const colors = [
+    { name: 'אדום', hex: '#e74c3c' },
+    { name: 'כחול', hex: '#3498db' },
+    { name: 'ירוק', hex: '#27ae60' },
+    { name: 'צהוב', hex: '#f1c40f' },
+    { name: 'כתום', hex: '#e67e22' },
+    { name: 'לבן', hex: '#ecf0f1' }
+  ];
+
+  const products = {
+    1: { name: 'מנורת לילה', price: '₪230', image: 'rebbe0.jpg', link: 'https://buy.stripe.com/test_00g5nT5fY0qDaSc6oo' },
+    2: { name: 'מנורה צבעונית', price: '₪260', image: 'rebbe2.jpg', link: 'https://buy.stripe.com/test_cN21gR9gk5aZ6JqaEG' }
+  };
+
+  function openModal(productId) {
+    let modal = document.getElementById("modal-" + productId);
+    if (!modal) {
+      createModal(productId);
+      modal = document.getElementById("modal-" + productId);
+    }
+    modal.style.display = "block";
+  }
+
+  function closeModal(productId) {
+    const modal = document.getElementById("modal-" + productId);
+    if (modal) modal.style.display = "none";
+  }
+
+  function createModal(productId) {
+    const container = document.getElementById("modals-container");
+    const product = products[productId];
+
+    const modal = document.createElement("div");
+    modal.className = "modal";
+    modal.id = "modal-" + productId;
+
+    modal.innerHTML = `
+      <span class="close" onclick="closeModal(${productId})">&times;</span>
+      <h3>בחר צבע למוצר: ${product.name}</h3>
+      <div class="color-options">
+        ${colors.map(color => `
+          <div class="color-circle" title="${color.name}" 
+               style="background-color: ${color.hex}" 
+               onclick="selectColor(${productId}, '${color.name}')"></div>
+        `).join("")}
+      </div>
+      <div class="selection-summary" id="summary-${productId}" style="display: none;"></div>
+    `;
+
+    container.appendChild(modal);
+  }
+
+  function selectColor(productId, colorName) {
+    const product = products[productId];
+    const summary = document.getElementById("summary-" + productId);
+    summary.innerHTML = `
+      <img src="${product.image}" alt="${product.name}" style="max-width:100px;"><br>
+      <p><strong>${product.name}</strong></p>
+      <p>${product.price}</p>
+      <p>צבע שנבחר: <strong>${colorName}</strong></p>
+      <a href="${product.link}" target="_blank">
+        <button>לתשלום</button>
+      </a>
+    `;
+    summary.style.display = "block";
+  }
+</script>
 
 </body>
 </html>
